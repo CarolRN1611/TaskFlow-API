@@ -1,0 +1,58 @@
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Usuarios {
+  id           String               @id @default(auto()) @map("_id") @db.ObjectId
+  nome         String
+  email        String               @unique
+  senha        String
+  roles        String               @default("user")
+  atividades   AtividadesUsuarios[] // Relacionamento com atividades
+  criadoEm     DateTime             @default(now())
+  atualizadoEm DateTime             @updatedAt
+  ultimoLogin  DateTime?
+}
+
+model Atividades {
+  id            String               @id @default(auto()) @map("_id") @db.ObjectId
+  titulo        String
+  descricao     String?
+  tarefas       Tarefas[]
+  responsaveis  AtividadesUsuarios[] // Relacionamento com usuários
+  criadoEm      DateTime             @default(now())
+  atualizadoEm  DateTime             @updatedAt
+  dataDeEntrega DateTime?
+  prioridade    String?
+  status        Boolean              @default(false)
+}
+
+// Tabela intermediária para o relacionamento muitos-para-muitos
+model AtividadesUsuarios {
+  id           String     @id @default(auto()) @map("_id") @db.ObjectId
+  usuarioId    String     @db.ObjectId
+  atividadeId  String     @db.ObjectId
+  usuario      Usuarios   @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+  atividade    Atividades @relation(fields: [atividadeId], references: [id], onDelete: Cascade)
+  criadoEm     DateTime   @default(now())
+  atualizadoEm DateTime   @updatedAt
+
+  @@unique([usuarioId, atividadeId]) // Garante que não haja duplicidade de relacionamento
+}
+
+model Tarefas {
+  id            String     @id @default(auto()) @map("_id") @db.ObjectId
+  descricao     String
+  status        Boolean    @default(false)
+  atividade_id  String     @db.ObjectId
+  atividade     Atividades @relation(fields: [atividade_id], references: [id], onDelete: Cascade)
+  criadoEm      DateTime   @default(now())
+  atualizadoEm  DateTime   @updatedAt
+  dataDeEntrega DateTime?
+  prioridade    String?
+}
