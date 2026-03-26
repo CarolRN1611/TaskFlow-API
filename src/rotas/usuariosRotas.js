@@ -1,13 +1,11 @@
-import express from 'express'; // Importa o módulo express para criar rotas
-import { PrismaClient } from '@prisma/client'; // Importa o cliente Prisma para interagir com o banco de dados
-import bcrypt from 'bcrypt'; // Importa o módulo bcrypt para hashing de senhas
-import jwt from 'jsonwebtoken'; // Importa o módulo jsonwebtoken para criação de tokens JWT
-import authMiddleware from '../middleware/authMiddleware.js'; // Importa middleware de autenticação
-import roleMiddleware from '../middleware/roleMiddleware.js'; // Importa middleware de verificação de roles
+import express from 'express';
+import { prisma } from '../config/database.js';
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
+import authMiddleware from '../middleware/authMiddleware.js';
+import roleMiddleware from '../middleware/roleMiddleware.js';
 
-// Instâncias
-const router = express.Router(); // Cria uma instância do roteador do express
-const prisma = new PrismaClient(); // Cria uma instância do cliente Prisma
+const router = express.Router();
 
 // Rota de registro
 router.post('/register', async (req, res) => {
