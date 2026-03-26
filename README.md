@@ -1,4 +1,4 @@
-# API de Tarefas
+# TaskFlow API
 
 API RESTful desenvolvida em **Node.js + Express** para gerenciamento de **tarefas individuais e em grupo**, com autenticação via **JWT** e persistência de dados em **MongoDB** utilizando **Prisma ORM**.
 
